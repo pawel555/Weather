@@ -53,7 +53,7 @@ class ChoiceList(QWidget):
         self.city_lst = QListWidget()
         lay.addWidget(self.city_lst, 1, 1, 1, 1)
         self.iren = None
-       # self.date_lst.itemClicked.connect(self.set_stl)
+        # self.date_lst.itemClicked.connect(self.set_stl)
         self.date_lst.itemClicked.connect(self.show_plot)
         self.city_lst.itemClicked.connect(self.show_plot)
         self.vtkWidget = vtkWidget
@@ -155,8 +155,7 @@ class ChoiceList(QWidget):
             # TODO a moze sea level?
             press.append(weather[2]['press'])
             wind.append(weather[5]['speed'])
-            # TODO a chmurki? :/
-            clouds.append(None)
+            clouds.append(weather[6])
 
         # print(temperatures)
         # print(hours)
@@ -166,31 +165,45 @@ class ChoiceList(QWidget):
 
         temp_ax = self.figure.add_subplot(611)
         temp_ax.clear()
-        temp_ax.plot(temperatures, '*-')
+        temp_ax.set_ylabel('Temperature\n[C]')
+        # temp_ax.plot(hours, temperatures, '*-')
+        temp_ax.plot(hours, temperatures, color='red', marker='o', linestyle='dashed', linewidth=2, markersize=12)
+        temp_ax.grid()
+        temp_ax.get_xaxis().set_ticklabels([])
 
         rain_ax = self.figure.add_subplot(612)
         rain_ax.clear()
-        rain_ax.plot(rainfalls, '*-')
+        rain_ax.set_ylabel('Rain\n[mm]')
+        rain_ax.plot(hours, rainfalls, color='blue', marker='o', linestyle='dashed', linewidth=2, markersize=12)
+        rain_ax.grid()
+        rain_ax.get_xaxis().set_ticklabels([])
 
         snow_ax = self.figure.add_subplot(613)
         snow_ax.clear()
-        snow_ax.plot(snowfalls, '*-')
-
-        snow_ax = self.figure.add_subplot(613)
-        snow_ax.clear()
-        snow_ax.plot(snowfalls, '*-')
+        snow_ax.set_ylabel('Snow\n[mm]')
+        snow_ax.plot(hours, snowfalls, color='darkblue', marker='o', linestyle='dashed', linewidth=2, markersize=12)
+        snow_ax.grid()
+        snow_ax.get_xaxis().set_ticklabels([])
 
         press_ax = self.figure.add_subplot(614)
         press_ax.clear()
-        press_ax.plot(press, '*-')
+        press_ax.set_ylabel('Pressure\n[hPa]')
+        press_ax.plot(hours, press, color='purple', marker='o', linestyle='dashed', linewidth=2, markersize=12)
+        press_ax.grid()
+        press_ax.get_xaxis().set_ticklabels([])
 
         wind_ax = self.figure.add_subplot(615)
         wind_ax.clear()
-        wind_ax.plot(wind, '*-')
+        wind_ax.set_ylabel('Wind\n[m/s]')
+        wind_ax.plot(hours, wind, color='green', marker='o', linestyle='dashed', linewidth=2, markersize=12)
+        wind_ax.grid()
+        wind_ax.get_xaxis().set_ticklabels([])
 
         clouds_ax = self.figure.add_subplot(616)
         clouds_ax.clear()
-        clouds_ax.plot(clouds, '*-')
+        clouds_ax.set_ylabel('Clouds\n[%]')
+        clouds_ax.plot(hours, clouds, color='gray', marker='o', linestyle='dashed', linewidth=2, markersize=12)
+        clouds_ax.grid()
 
         # refresh canvas
         self.canvas.draw()

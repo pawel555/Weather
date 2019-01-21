@@ -26,8 +26,8 @@ class GetDataFromOWMApi:
         for weather in fore:
             ref_time = weather.get_reference_time('iso')
             if date in ref_time:
-                fore_modi.append([ref_time.split(' ')[1], weather.get_rain(), weather.get_pressure(),
-                    weather.get_temperature(unit='celsius'), weather.get_snow(), weather.get_wind()])
+                fore_modi.append([ref_time.split(' ')[1].split('+')[0], weather.get_rain(), weather.get_pressure(),
+                    weather.get_temperature(unit='celsius'), weather.get_snow(), weather.get_wind(), weather.get_clouds()])
 
         return fore_modi
 
