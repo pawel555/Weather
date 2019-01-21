@@ -240,7 +240,7 @@ choices_list = ChoiceList(lay)
 
 w = QWidget()
 w.setFixedWidth(1800)
-w.setFixedHeight(1100)
+w.setFixedHeight(1040)
 w.move(100, 100)
 w.setLayout(lay)
 w.show()
