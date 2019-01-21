@@ -66,38 +66,35 @@ class ChoiceList(QWidget):
         self.city_lst.setCurrentRow(1)
 
     def set_stl(self):
-        reader = vtk.vtkPNGReader()
-        reader.SetFileName("Poland.png")
-        quant = vtk.vtkImageQuantizeRGBToIndex()
-        quant.SetInputConnection(reader.GetOutputPort())
-        quant.SetNumberOfColors(32)
-        i2pd = vtk.vtkImageToPolyDataFilter()
-        i2pd.SetInputConnection(quant.GetOutputPort())
-        i2pd.SetLookupTable(quant.GetLookupTable())
-        i2pd.SetColorModeToLUT()
-        i2pd.SetOutputStyleToPolygonalize()
-        i2pd.SetError(0)
-        i2pd.DecimationOn()
-        i2pd.SetDecimationError(0.0)
-        i2pd.SetSubImageSize(25)
-        tf = vtk.vtkTriangleFilter()
-        tf.SetInputConnection(i2pd.GetOutputPort())
+        # filename = "files/Part_1.stl"
+        filename = str(self.date_lst.currentItem().text())
+        # print(filename)
+
+        reader = vtk.vtkSTLReader()
+        reader.SetFileName(filename)
 
         mapper = vtk.vtkPolyDataMapper()
-        mapper.SetInputConnection(tf.GetOutputPort())
+        if vtk.VTK_MAJOR_VERSION <= 5:
+            mapper.SetInput(reader.GetOutput())
+        else:
+            mapper.SetInputConnection(reader.GetOutputPort())
+
         actor = vtk.vtkActor()
         actor.SetMapper(mapper)
-        renderer = vtk.vtkRenderer()
-        rendererWindow = vtk.vtkRenderWindow()
-        rendererWindow.AddRenderer(renderer)
 
-        interactor = vtk.vtkRenderWindowInteractor()
-        interactor.SetRenderWindow(rendererWindow)
-        renderer.AddActor(actor)
-        rendererWindow.Render()
+        self.vtkWidget = QVTKRenderWindowInteractor()
 
+        ren = vtk.vtkRenderer()
+        self.vtkWidget.GetRenderWindow().AddRenderer(ren)
+        self.iren = self.vtkWidget.GetRenderWindow().GetInteractor()
 
-        interactor.Start()
+        ren.AddActor(actor)
+        ren.ResetCamera()
+
+        lay.addWidget(self.vtkWidget, 2, 5, 4, 4)
+
+        self.iren_refresh()
+
 
     def iren_refresh(self):
         self.iren.Initialize()
