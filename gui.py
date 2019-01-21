@@ -9,6 +9,7 @@ from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from get_data_api import GetDataFromOWMApi
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
+from weather_3d_vtk_reader import Weather3D
 
 
 # class ImportButton(QWidget):
