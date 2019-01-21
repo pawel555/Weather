@@ -1,5 +1,7 @@
 import vtk
 import time
+from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
+
 
 class Weather3D:
 
@@ -27,14 +29,14 @@ class Weather3D:
         actor = vtk.vtkActor()
         actor.SetMapper(mapper)
         renderer = vtk.vtkRenderer()
-        rendererWindow = vtk.vtkRenderWindow()
-        rendererWindow.AddRenderer(renderer)
 
-        interactor = vtk.vtkRenderWindowInteractor()
-        interactor.SetRenderWindow(rendererWindow)
+        vtkWidget = QVTKRenderWindowInteractor()
+
+        vtkWidget.GetRenderWindow().AddRenderer(renderer)
+
+        interactor = vtkWidget.GetRenderWindow().GetInteractor()
         renderer.AddActor(actor)
-        rendererWindow.Render()
+        renderer.ResetCamera()
 
-
-        interactor.Start()
+        return vtkWidget
 
