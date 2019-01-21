@@ -27,7 +27,7 @@ from weather_3d_vtk_reader import Weather3D
 
 
 class ChoiceList(QWidget):
-    def __init__(self, lay, vtkWidget,  parent=None):
+    def __init__(self, lay, parent=None):
         QWidget.__init__(self, parent)
         # self.pic_lbl = QLabel()
         # self.pic_lbl.setFixedWidth(800)
@@ -57,7 +57,7 @@ class ChoiceList(QWidget):
         # self.date_lst.itemClicked.connect(self.set_stl)
         self.date_lst.itemClicked.connect(self.show_plot)
         self.city_lst.itemClicked.connect(self.show_plot)
-        self.vtkWidget = vtkWidget
+        # self.vtkWidget = vtkWidget
         self.city_lst.addItems(['Warsaw, PL', 'Gdansk, PL', 'Pila, PL', 'Torun, PL', 'Plock, PL', 'Poznan, PL', 'Opole, PL',
                        'Krakow, PL', 'Lublin, PL', 'Rzeszow, PL'])
         self.dates = self.set_dates()
@@ -227,15 +227,16 @@ lay.addWidget(lbl2, 1, 0, 1, 1)
 notes = QTextEdit("Tu beda notatki")
 lay.addWidget(notes, 0, 3, 2, 4)
 
-vtkWidget = QVTKRenderWindowInteractor()
+
+we3d = Weather3D()
+vtkWidget = we3d.main()
+
+# vtkWidget = QVTKRenderWindowInteractor()
 vtkWidget.setFixedWidth(800)
 vtkWidget.setFixedHeight(700)
 lay.addWidget(vtkWidget, 2, 4, 4, 5)
 
-
-choices_list = ChoiceList(lay, vtkWidget)
-# btn = ImportButton(lay, date_list.get_list())
-
+choices_list = ChoiceList(lay)
 
 w = QWidget()
 w.setFixedWidth(1800)

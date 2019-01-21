@@ -28,6 +28,7 @@ class Weather3D:
         mapper.SetInputConnection(tf.GetOutputPort())
         actor = vtk.vtkActor()
         actor.SetMapper(mapper)
+
         renderer = vtk.vtkRenderer()
 
         vtkWidget = QVTKRenderWindowInteractor()
@@ -38,5 +39,7 @@ class Weather3D:
         renderer.AddActor(actor)
         renderer.ResetCamera()
 
-        return vtkWidget
+        interactor.Initialize()
+        interactor.Start()
 
+        return vtkWidget
