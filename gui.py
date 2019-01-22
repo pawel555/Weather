@@ -1,39 +1,64 @@
 import sys
 import vtk
 import time
-
-
 import PyQt5
 from PyQt5.QtWidgets import *
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from get_data_api import GetDataFromOWMApi
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg, NavigationToolbar2QT as NavigationToolbar
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from weather_3d_vtk_reader import Weather3D
 
 
-# class ImportButton(QWidget):
-#     def __init__(self, lay, lst, parent=None):
-#         QWidget.__init__(self, parent)
-#         self.btn = QPushButton('Select files to load:')
-#         self.btn.clicked.connect(self.upload_files)
-#         self.lst = lst
-#         lay.addWidget(self.btn, 6, 0, 1, 1)
-#
-#     def upload_files(self):
-#         names = QFileDialog.getOpenFileNames(self, 'Open file')
-#         for name in names[0]:
-#             self.lst.addItem(name)
-
-
-class ChoiceList(QWidget):
+class Activity(QWidget):
     def __init__(self, lay, parent=None):
         QWidget.__init__(self, parent)
-        # self.pic_lbl = QLabel()
-        # self.pic_lbl.setFixedWidth(800)
-        # self.pic_lbl.setFixedHeight(720)
-        # lay.addWidget(self.pic_lbl, 2, 0, 4, 4)
-        # self.pic_lbl.setPixmap(PyQt5.QtGui.QPixmap("pic2.jpg"))
+
+        self.fore = None
+
+        # prepare vtk window - now its just an empty stub
+        self.we3d = Weather3D()
+        self.vtkWidget = QVTKRenderWindowInteractor()
+
+        # now its time to set up checkboxes for 3d plot
+        self.temperatures_checkbox = QCheckBox()
+        self.rainfalls_checkbox = QCheckBox()
+        self.snowfalls_checkbox = QCheckBox()
+        self.press_checkbox = QCheckBox()
+        self.wind_checkbox = QCheckBox()
+        self.clouds_checkbox = QCheckBox()
+
+        self.temperatures_checkbox.setChecked(True)
+        self.rainfalls_checkbox.setChecked(True)
+        self.snowfalls_checkbox.setChecked(True)
+        self.press_checkbox.setChecked(True)
+        self.wind_checkbox.setChecked(True)
+        self.clouds_checkbox.setChecked(True)
+
+        self.temperatures_checkbox.stateChanged.connect(self.checkbox_state_changed)
+        self.rainfalls_checkbox.stateChanged.connect(self.checkbox_state_changed)
+        self.snowfalls_checkbox.stateChanged.connect(self.checkbox_state_changed)
+        self.press_checkbox.stateChanged.connect(self.checkbox_state_changed)
+        self.wind_checkbox.stateChanged.connect(self.checkbox_state_changed)
+        self.clouds_checkbox.stateChanged.connect(self.checkbox_state_changed)
+
+        lay.addWidget(QLabel("Temperature:"),  0, 4, 1, 1)
+        lay.addWidget(self.temperatures_checkbox, 0, 5, 1, 1)
+
+        lay.addWidget(QLabel("Rain:"), 1, 4, 1, 1)
+        lay.addWidget(self.rainfalls_checkbox, 1, 5, 1, 1)
+
+        lay.addWidget(QLabel("Snow:"), 0, 6, 1, 1)
+        lay.addWidget(self.snowfalls_checkbox, 0, 7, 1, 1)
+
+        lay.addWidget(QLabel("Pressure:"), 1, 6, 1, 1)
+        lay.addWidget(self.press_checkbox, 1, 7, 1, 1)
+
+        lay.addWidget(QLabel("Wind:"), 0, 8, 1, 1)
+        lay.addWidget(self.wind_checkbox, 0, 9, 1, 1)
+
+        lay.addWidget(QLabel("Clouds:"), 1, 8, 1, 1)
+        lay.addWidget(self.clouds_checkbox, 1, 9, 1, 1)
 
         # a figure instance to plot on
         self.figure = Figure()
@@ -42,22 +67,14 @@ class ChoiceList(QWidget):
         # it takes the `figure` instance as a parameter to __init__
         self.canvas = FigureCanvasQTAgg(self.figure)
 
-        # this is the Navigation widget
-        # it takes the Canvas widget and a parent
-        #  self.toolbar = NavigationToolbar(self.canvas, self)
-        # TODO chyba nie chcemy toolbara?
-        # lay.addWidget(self.toolbar, 6, 0, 1, 1)
         lay.addWidget(self.canvas, 2, 0, 4, 4)
 
         self.date_lst = QListWidget()
         lay.addWidget(self.date_lst, 0, 1, 1, 1)
         self.city_lst = QListWidget()
         lay.addWidget(self.city_lst, 1, 1, 1, 1)
-        self.iren = None
-        # self.date_lst.itemClicked.connect(self.set_stl)
         self.date_lst.itemClicked.connect(self.show_plot)
         self.city_lst.itemClicked.connect(self.show_plot)
-        # self.vtkWidget = vtkWidget
         self.city_lst.addItems(['Warsaw, PL', 'Gdansk, PL', 'Pila, PL', 'Torun, PL', 'Plock, PL', 'Poznan, PL', 'Opole, PL',
                        'Krakow, PL', 'Lublin, PL', 'Rzeszow, PL'])
         self.dates = self.set_dates()
@@ -65,40 +82,7 @@ class ChoiceList(QWidget):
         self.date_lst.setCurrentRow(1)
         self.city_lst.setCurrentRow(1)
 
-    def set_stl(self):
-        # filename = "files/Part_1.stl"
-        filename = str(self.date_lst.currentItem().text())
-        # print(filename)
-
-        reader = vtk.vtkSTLReader()
-        reader.SetFileName(filename)
-
-        mapper = vtk.vtkPolyDataMapper()
-        if vtk.VTK_MAJOR_VERSION <= 5:
-            mapper.SetInput(reader.GetOutput())
-        else:
-            mapper.SetInputConnection(reader.GetOutputPort())
-
-        actor = vtk.vtkActor()
-        actor.SetMapper(mapper)
-
-        self.vtkWidget = QVTKRenderWindowInteractor()
-
-        ren = vtk.vtkRenderer()
-        self.vtkWidget.GetRenderWindow().AddRenderer(ren)
-        self.iren = self.vtkWidget.GetRenderWindow().GetInteractor()
-
-        ren.AddActor(actor)
-        ren.ResetCamera()
-
-        lay.addWidget(self.vtkWidget, 2, 5, 4, 4)
-
-        self.iren_refresh()
-
-
-    def iren_refresh(self):
-        self.iren.Initialize()
-        self.iren.Start()
+        self.lay = lay
 
     def get_list(self):
         return self.date_lst
@@ -129,7 +113,7 @@ class ChoiceList(QWidget):
         city = str(self.city_lst.currentItem().text())
 
         getter = GetDataFromOWMApi()
-        fore = getter.main(city, date)
+        self.fore = getter.main(city, date)
 
         hours = []
         temperatures = []
@@ -139,7 +123,7 @@ class ChoiceList(QWidget):
         wind = []
         clouds = []
 
-        for weather in fore:
+        for weather in self.fore:
 
             hours.append(weather[0])
             temperatures.append(weather[3]['temp'])
@@ -167,7 +151,6 @@ class ChoiceList(QWidget):
         temp_ax = self.figure.add_subplot(611)
         temp_ax.clear()
         temp_ax.set_ylabel('Temperature\n[C]')
-        # temp_ax.plot(hours, temperatures, '*-')
         temp_ax.plot(hours, temperatures, color='red', marker='o', linestyle='dashed', linewidth=2, markersize=12)
         temp_ax.grid()
         temp_ax.get_xaxis().set_ticklabels([])
@@ -209,6 +192,49 @@ class ChoiceList(QWidget):
         # refresh canvas
         self.canvas.draw()
 
+    def checkbox_state_changed(self, int):
+        checkboxes = []
+        if self.temperatures_checkbox.isChecked():
+            checkboxes.append({"temp": True})
+        else:
+            checkboxes.append({"temp": False})
+
+        if self.rainfalls_checkbox.isChecked():
+            checkboxes.append({"rain": True})
+        else:
+            checkboxes.append({"rain": False})
+
+        if self.snowfalls_checkbox.isChecked():
+            checkboxes.append({"snow": True})
+        else:
+            checkboxes.append({"snow": False})
+
+        if self.press_checkbox.isChecked():
+            checkboxes.append({"pressure": True})
+        else:
+            checkboxes.append({"pressure": False})
+
+        if self.wind_checkbox.isChecked():
+            checkboxes.append({"wind": True})
+        else:
+            checkboxes.append({"wind": False})
+
+        if self.clouds_checkbox.isChecked():
+            checkboxes.append({"clouds": True})
+        else:
+            checkboxes.append({"clouds": False})
+
+        date = str(self.date_lst.currentItem().text())
+
+        print("KWEEK")
+
+        self.vtkWidget = self.we3d.main(self.fore, date, checkboxes)
+
+        self.vtkWidget.setFixedWidth(800)
+        self.vtkWidget.setFixedHeight(700)
+        self.lay.addWidget(self.vtkWidget, 2, 4, 4, 5)
+
+
 
 # TODO okienko po kliknieciu z listy zeby bylo wiadomo ze pogoda sie liczy -> jakies koleczko krecace czy cos
 
@@ -223,20 +249,9 @@ lay.addWidget(lbl1, 0, 0, 1, 1)
 lbl2 = QLabel("Choose city:")
 lay.addWidget(lbl2, 1, 0, 1, 1)
 
+choices_list = Activity(lay)
 
-notes = QTextEdit("Tu beda notatki")
-lay.addWidget(notes, 0, 3, 2, 4)
-
-
-we3d = Weather3D()
-vtkWidget = we3d.main()
-
-# vtkWidget = QVTKRenderWindowInteractor()
-vtkWidget.setFixedWidth(800)
-vtkWidget.setFixedHeight(700)
-lay.addWidget(vtkWidget, 2, 4, 4, 5)
-
-choices_list = ChoiceList(lay)
+choices_list.checkbox_state_changed(1)
 
 w = QWidget()
 w.setFixedWidth(1800)

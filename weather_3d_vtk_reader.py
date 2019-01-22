@@ -5,7 +5,7 @@ from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
 class Weather3D:
 
-    def main(self):
+    def main(self, forecast, date, checkboxes):
 
         reader = vtk.vtkPNGReader()
         reader.SetFileName("Poland.png")
