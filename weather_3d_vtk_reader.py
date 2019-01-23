@@ -8,11 +8,12 @@ class Weather3D:
 
     def __init__(self):
         self.fore = None
-
+        self.date_of_data_generation= None
     def main(self, forecast, date, checkboxes):
 
-        if self.fore is None:
+        if self.fore is None or self.date_of_data_generation != date:
             self.fore = GetDataFromOWMApi().return_weather_for_all_cities(date)
+            self.date_of_data_generation =date
 
         reader = vtk.vtkPNGReader()
         reader.SetFileName("Poland.png")
@@ -44,20 +45,29 @@ class Weather3D:
 
         interactor = vtkWidget.GetRenderWindow().GetInteractor()
         renderer.AddActor(actor)
-        list_of_actors = list(self.return_weather_actor(forecast, date, checkboxes))
 
-        for l in range(0,len(list_of_actors)):
-            new_actor = (list_of_actors[l])
-            if l>0:
-                new_actor.SetPosition(0,l,0)
-            renderer.AddActor(new_actor)
+        #warszawa
+        for i in range (len(self.fore)):
+            list_of_actors = list(self.return_weather_actor(self.fore[i], date, checkboxes))
+            if self.fore[i][0] == 'Warsaw, PL':
+                l=0
+                for actor_from_list in list_of_actors:
+                    actor_from_list.SetPosition(330-l*5,280,1)
+                    l+=1
+                    renderer.AddActor(actor_from_list)
+            elif self.fore[i][0] == 'Gdansk, PL':
+                l=0
+                for actor_from_list in list_of_actors:
+                    actor_from_list.SetPosition(245-l*5,420,1)
+                    l+=1
+                    renderer.AddActor(actor_from_list)        
         renderer.ResetCamera()
 
         interactor.Initialize()
         interactor.Start()
-        print(checkboxes)
+        #print(checkboxes)
         #print(date)
-        print(forecast)
+        #print(self.fore)
         #self.return_weather_widget(forecast, date, checkboxes)
         #[{'temp': True}, {'rain': True}, {'snow': True}, {'pressure': True}, {'wind': True}, {'clouds': True}]
         return vtkWidget
@@ -65,38 +75,27 @@ class Weather3D:
 
     def return_weather_actor(self, weather, date, checkboxes):
         #actor = vtk.vtkActor()
-        actor = vtk.vtkTextActor()
+        actor = vtk.vtkActor()
         actor2 = vtk.vtkActor()
+        print(weather)
         if checkboxes[0].get('temp'):
-            #print("True")
-            #cylinder = vtk.vtkCylinderSource()
-            #cylinderMapper = vtk.vtkPolyDataMapper()
-            #cylinderMapper.SetInputConnection(cylinder.GetOutputPort())
-#
-            #vtkTransform = vtk.vtkTransform()
-#
-            #vtkTransform.Scale(12,12,12)
-            #
-            #actor.SetMapper(cylinderMapper)
-            #actor.SetUserTransform(vtkTransform)
-            #actor.GetProperty().SetColor(tomato)
-            actor.SetInput("123")
-            txtprop=actor.GetTextProperty()
-            txtprop.SetFontFamilyToArial()
-            txtprop.SetFontSize(200)
-            txtprop.SetColor(1,1,1)
-        if checkboxes[1].get('rain'):
+            textSource = vtk.vtkTextSource()
+            textSource.SetText(str(weather[4].get('temp')))
+            textSource.SetForegroundColor(1.0, 0.0, 0.0)
+            textSource.BackingOn()
+            textSource.Update()
+            textMapper = vtk.vtkPolyDataMapper()
+            textMapper.SetInputConnection(textSource.GetOutputPort())
+            actor.SetMapper(textMapper)
+            actor.SetScale(0.9)
+        if checkboxes[3].get('pressure'):
             print("True")
             cube = vtk.vtkCubeSource()
             cubeMapper = vtk.vtkPolyDataMapper()
             cubeMapper.SetInputConnection(cube.GetOutputPort())
-
-            vtkTransform = vtk.vtkTransform()
-
-            vtkTransform.Scale(15,15,15)
-            
+            print(str(weather[3].get('press')))            
             actor2.SetMapper(cubeMapper)
-            actor2.SetUserTransform(vtkTransform)
-            actor2.GetProperty().SetColor(tomato)
+            actor2.SetScale((float(weather[3].get('press'))-950)*12/100)
+            actor2.GetProperty().SetColor((float(weather[3].get('press'))-950)/100,0,0)
         return actor,actor2
 

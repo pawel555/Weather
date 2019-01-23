@@ -37,7 +37,7 @@ class GetDataFromOWMApi:
         my_dict = get_data_from_api.retrunWeatherForFiveDays()
         
         fore_modi = []
-
+        date = date +' 12'
         for i in range (len(self.cities)):
             fore = my_dict[self.cities[i]]
             for weather in fore:
