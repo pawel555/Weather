@@ -31,6 +31,22 @@ class GetDataFromOWMApi:
 
         return fore_modi
 
+    def return_weather_for_all_cities(self, date):
+        get_data_from_api = GetDataFromOWMApi()
+
+        my_dict = get_data_from_api.retrunWeatherForFiveDays()
+        
+        fore_modi = []
+
+        for i in range (len(self.cities)):
+            fore = my_dict[self.cities[i]]
+            for weather in fore:
+                ref_time = weather.get_reference_time('iso')
+                if date in ref_time:
+                    fore_modi.append([self.cities[i],ref_time.split(' ')[1].split('+')[0], weather.get_rain(), weather.get_pressure(),
+                        weather.get_temperature(unit='celsius'), weather.get_snow(), weather.get_wind(), weather.get_clouds()])
+
+        return fore_modi
     # for weather in fore:
     #     print(weather.get_reference_time('iso'), weather.get_rain(), weather.get_pressure(),
     #           weather.get_temperature(unit='celsius'), weather.get_snow(), weather.get_wind())

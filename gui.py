@@ -228,7 +228,7 @@ class Activity(QWidget):
 
         print("KWEEK")
 
-        self.vtkWidget = self.we3d.main(self.fore, date, checkboxes)
+        self.vtkWidget = self.we3d.main(GetDataFromOWMApi().return_weather_for_all_cities(date), date, checkboxes)
 
         self.vtkWidget.setFixedWidth(800)
         self.vtkWidget.setFixedHeight(700)
