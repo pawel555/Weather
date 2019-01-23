@@ -2,10 +2,18 @@ import vtk
 import time
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 from vtk.util.colors import tomato
+from get_data_api import GetDataFromOWMApi
 
 class Weather3D:
 
+    def __init__(self):
+        self.fore = None
+
     def main(self, forecast, date, checkboxes):
+
+        if self.fore is None:
+            self.fore = GetDataFromOWMApi().return_weather_for_all_cities(date)
+
 
         reader = vtk.vtkPNGReader()
         reader.SetFileName("Poland.png")
