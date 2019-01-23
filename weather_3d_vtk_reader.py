@@ -14,7 +14,6 @@ class Weather3D:
         if self.fore is None:
             self.fore = GetDataFromOWMApi().return_weather_for_all_cities(date)
 
-
         reader = vtk.vtkPNGReader()
         reader.SetFileName("Poland.png")
         quant = vtk.vtkImageQuantizeRGBToIndex()
