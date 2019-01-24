@@ -248,6 +248,8 @@ lay.addWidget(lbl2, 1, 0, 1, 1)
 
 choices_list = Activity(lay)
 
+choices_list.show_plot()
+
 choices_list.checkbox_state_changed(1)
 
 w = QWidget()
