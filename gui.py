@@ -85,7 +85,7 @@ class Activity(QWidget):
         self.lay = lay
 
     def hax_method(self):
-        self.checkbox_state_changed()
+        self.checkbox_state_changed(1)
         self.show_plot()
 
     def get_list(self):
