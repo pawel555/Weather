@@ -46,21 +46,69 @@ class Weather3D:
         interactor = vtkWidget.GetRenderWindow().GetInteractor()
         renderer.AddActor(actor)
 
-        #warszawa
+  
         for i in range (len(self.fore)):
             list_of_actors = list(self.return_weather_actor(self.fore[i], date, checkboxes))
             if self.fore[i][0] == 'Warsaw, PL':
                 l=0
                 for actor_from_list in list_of_actors:
-                    actor_from_list.SetPosition(330-l*5,280,1)
+                    actor_from_list.SetPosition(330-l*5,280,5)
                     l+=1
                     renderer.AddActor(actor_from_list)
             elif self.fore[i][0] == 'Gdansk, PL':
                 l=0
                 for actor_from_list in list_of_actors:
-                    actor_from_list.SetPosition(245-l*5,420,1)
+                    actor_from_list.SetPosition(245-l*5,420,5)
                     l+=1
                     renderer.AddActor(actor_from_list)        
+            elif self.fore[i][0] == 'Pila, PL':
+                l=0
+                for actor_from_list in list_of_actors:
+                    actor_from_list.SetPosition(150-l*5,340,5)
+                    l+=1
+                    renderer.AddActor(actor_from_list)
+            elif self.fore[i][0] == 'Torun, PL':
+                l=0
+                for actor_from_list in list_of_actors:
+                    actor_from_list.SetPosition(230-l*5,320,5)
+                    l+=1
+                    renderer.AddActor(actor_from_list)
+            elif self.fore[i][0] == 'Plock, PL':
+                l=0
+                for actor_from_list in list_of_actors:
+                    actor_from_list.SetPosition(280-l*5,300,5)
+                    l+=1
+                    renderer.AddActor(actor_from_list)
+            elif self.fore[i][0] == 'Poznan, PL':
+                l=0
+                for actor_from_list in list_of_actors:
+                    actor_from_list.SetPosition(160-l*5,280,5)
+                    l+=1
+                    renderer.AddActor(actor_from_list)
+            elif self.fore[i][0] == 'Opole, PL':
+                l=0
+                for actor_from_list in list_of_actors:
+                    actor_from_list.SetPosition(200-l*5,150,5)
+                    l+=1
+                    renderer.AddActor(actor_from_list)
+            elif self.fore[i][0] == 'Krakow, PL':
+                l=0
+                for actor_from_list in list_of_actors:
+                    actor_from_list.SetPosition(290-l*5,100,5)
+                    l+=1
+                    renderer.AddActor(actor_from_list)
+            elif self.fore[i][0] == 'Lublin, PL':
+                l=0
+                for actor_from_list in list_of_actors:
+                    actor_from_list.SetPosition(420-l*5,195,5)
+                    l+=1
+                    renderer.AddActor(actor_from_list)     
+            elif self.fore[i][0] == 'Rzeszow, PL':
+                l=0
+                for actor_from_list in list_of_actors:
+                    actor_from_list.SetPosition(390-l*5,100,5)
+                    l+=1
+                    renderer.AddActor(actor_from_list)    
         renderer.ResetCamera()
 
         interactor.Initialize()
