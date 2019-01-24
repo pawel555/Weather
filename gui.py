@@ -136,8 +136,7 @@ class Activity(QWidget):
                 snowfalls.append(weather[4]['3h'])
             except KeyError:
                 snowfalls.append(0)
-
-            # TODO a moze sea level?
+                
             press.append(weather[2]['press'])
             wind.append(weather[5]['speed'])
             clouds.append(weather[6])
@@ -231,10 +230,6 @@ class Activity(QWidget):
         self.vtkWidget.setFixedWidth(800)
         self.vtkWidget.setFixedHeight(700)
         self.lay.addWidget(self.vtkWidget, 2, 4, 4, 5)
-
-
-
-# TODO okienko po kliknieciu z listy zeby bylo wiadomo ze pogoda sie liczy -> jakies koleczko krecace czy cos
 
 
 app = QApplication(sys.argv)
