@@ -125,6 +125,8 @@ class Weather3D:
         #actor = vtk.vtkActor()
         actor = vtk.vtkActor()
         actor2 = vtk.vtkActor()
+        actor3 = vtk.vtkActor()
+        actor4 = vtk.vtkActor()
         print(weather)
         if checkboxes[0].get('temp'):
             textSource = vtk.vtkTextSource()
@@ -136,14 +138,31 @@ class Weather3D:
             textMapper.SetInputConnection(textSource.GetOutputPort())
             actor.SetMapper(textMapper)
             actor.SetScale(0.9)
+        if checkboxes[2].get('snow'):
+            cube = vtk.vtkCubeSource()
+            cubeMapperSnow = vtk.vtkPolyDataMapper()
+            cubeMapperSnow.SetInputConnection(cube.GetOutputPort())
+            #print(str(weather[3].get('press')))            
+            actor4.SetMapper(cubeMapperSnow)
+            actor4.SetScale(7,7,float(weather[5].get('3h'))*100)
+            actor4.GetProperty().SetColor(0,0,1)
         if checkboxes[3].get('pressure'):
-            print("True")
             cube = vtk.vtkCubeSource()
             cubeMapper = vtk.vtkPolyDataMapper()
             cubeMapper.SetInputConnection(cube.GetOutputPort())
-            print(str(weather[3].get('press')))            
+            #print(str(weather[3].get('press')))            
             actor2.SetMapper(cubeMapper)
-            actor2.SetScale((float(weather[3].get('press'))-950)*12/100)
+            actor2.SetScale(7,7,(float(weather[3].get('press'))-950)*40/100)
             actor2.GetProperty().SetColor((float(weather[3].get('press'))-950)/100,0,0)
-        return actor,actor2
+        if checkboxes[4].get('wind'):
+            arrow = vtk.vtkArrowSource()
+            #arrow.SetShaftRadius(float(weather[6].get('deg'))/360)
+            arrowMapper = vtk.vtkPolyDataMapper()
+            arrowMapper.SetInputConnection(arrow.GetOutputPort())
+            print(str(weather[6].get('speed')))            
+            actor3.SetMapper(arrowMapper)
+            actor3.SetScale(float(weather[6].get('speed'))*15)
+            actor3.GetProperty().SetColor(0,1,0)
+            actor3.SetOrientation(0,0,float(weather[6].get('deg')))
+        return actor,actor2,actor3,actor4
 
