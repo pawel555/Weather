@@ -144,7 +144,10 @@ class Weather3D:
             cubeMapperSnow.SetInputConnection(cube.GetOutputPort())
             #print(str(weather[3].get('press')))            
             actor4.SetMapper(cubeMapperSnow)
-            actor4.SetScale(7,7,float(weather[5].get('3h'))*100)
+            try:
+                actor4.SetScale(7,7,float(weather[5].get('3h'))*100)
+            except:
+                actor4.SetScale(7,7,0)
             actor4.GetProperty().SetColor(0,0,1)
         if checkboxes[3].get('pressure'):
             cube = vtk.vtkCubeSource()
