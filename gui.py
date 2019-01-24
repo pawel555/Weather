@@ -73,7 +73,7 @@ class Activity(QWidget):
         lay.addWidget(self.date_lst, 0, 1, 1, 1)
         self.city_lst = QListWidget()
         lay.addWidget(self.city_lst, 1, 1, 1, 1)
-        self.date_lst.itemClicked.connect(self.show_plot)
+        self.date_lst.itemClicked.connect(self.hax_method)
         self.city_lst.itemClicked.connect(self.show_plot)
         self.city_lst.addItems(['Warsaw, PL', 'Gdansk, PL', 'Pila, PL', 'Torun, PL', 'Plock, PL', 'Poznan, PL', 'Opole, PL',
                        'Krakow, PL', 'Lublin, PL', 'Rzeszow, PL'])
@@ -83,6 +83,10 @@ class Activity(QWidget):
         self.city_lst.setCurrentRow(1)
 
         self.lay = lay
+
+    def hax_method(self):
+        self.checkbox_state_changed(1)
+        self.show_plot()
 
     def get_list(self):
         return self.date_lst
@@ -136,7 +140,7 @@ class Activity(QWidget):
                 snowfalls.append(weather[4]['3h'])
             except KeyError:
                 snowfalls.append(0)
-                
+
             press.append(weather[2]['press'])
             wind.append(weather[5]['speed'])
             clouds.append(weather[6])
