@@ -9,6 +9,8 @@ class Weather3D:
     def __init__(self):
         self.fore = None
         self.date_of_data_generation= None
+        self.filename = "cloud.stl"
+
     def main(self, forecast, date, checkboxes):
 
         if self.fore is None or self.date_of_data_generation != date:
@@ -121,10 +123,12 @@ class Weather3D:
         actor2 = vtk.vtkActor()
         actor3 = vtk.vtkActor()
         actor4 = vtk.vtkActor()
+        actor5 = vtk.vtkActor()
         if checkboxes[0].get('temp'):
             textSource = vtk.vtkTextSource()
             textSource.SetText(str(weather[4].get('temp')))
-            textSource.SetForegroundColor(1.0, 0.0, 0.0)
+            textSource.SetBackgroundColor(1, 1, 1)
+            textSource.SetForegroundColor(0.0, 0.0, 0.0)
             textSource.BackingOn()
             textSource.Update()
             textMapper = vtk.vtkPolyDataMapper()
@@ -157,5 +161,15 @@ class Weather3D:
             actor3.SetScale(float(weather[6].get('speed'))*15)
             actor3.GetProperty().SetColor(0,1,0)
             actor3.SetOrientation(0,0,float(weather[6].get('deg')))
-        return actor,actor2,actor3,actor4
+        if checkboxes[5].get('clouds'):
+            readerStl = vtk.vtkSTLReader()
+            readerStl.SetFileName(self.filename)
+            mapperStl = vtk.vtkPolyDataMapper()
+            mapperStl.SetInputConnection(readerStl.GetOutputPort())
+            actor5.SetMapper(mapperStl)
+            try:
+                actor5.SetScale(0.5*float(weather[7])/100)
+            except:
+                actor5.SetScale(0.1)
+        return actor,actor2,actor3,actor4,actor5
 
