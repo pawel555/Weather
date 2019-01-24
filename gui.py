@@ -73,7 +73,7 @@ class Activity(QWidget):
         lay.addWidget(self.date_lst, 0, 1, 1, 1)
         self.city_lst = QListWidget()
         lay.addWidget(self.city_lst, 1, 1, 1, 1)
-        self.date_lst.itemClicked.connect(self.show_plot)
+        self.date_lst.itemClicked.connect(self.hax_method)
         self.city_lst.itemClicked.connect(self.show_plot)
         self.city_lst.addItems(['Warsaw, PL', 'Gdansk, PL', 'Pila, PL', 'Torun, PL', 'Plock, PL', 'Poznan, PL', 'Opole, PL',
                        'Krakow, PL', 'Lublin, PL', 'Rzeszow, PL'])
