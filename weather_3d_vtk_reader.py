@@ -113,21 +113,14 @@ class Weather3D:
         renderer.SetBackground(1,1,1)
         interactor.Initialize()
         interactor.Start()
-        #print(checkboxes)
-        #print(date)
-        #print(self.fore)
-        #self.return_weather_widget(forecast, date, checkboxes)
-        #[{'temp': True}, {'rain': True}, {'snow': True}, {'pressure': True}, {'wind': True}, {'clouds': True}]
         return vtkWidget
 
 
     def return_weather_actor(self, weather, date, checkboxes):
-        #actor = vtk.vtkActor()
         actor = vtk.vtkActor()
         actor2 = vtk.vtkActor()
         actor3 = vtk.vtkActor()
         actor4 = vtk.vtkActor()
-        print(weather)
         if checkboxes[0].get('temp'):
             textSource = vtk.vtkTextSource()
             textSource.SetText(str(weather[4].get('temp')))
@@ -141,8 +134,7 @@ class Weather3D:
         if checkboxes[2].get('snow'):
             cube = vtk.vtkCubeSource()
             cubeMapperSnow = vtk.vtkPolyDataMapper()
-            cubeMapperSnow.SetInputConnection(cube.GetOutputPort())
-            #print(str(weather[3].get('press')))            
+            cubeMapperSnow.SetInputConnection(cube.GetOutputPort())         
             actor4.SetMapper(cubeMapperSnow)
             try:
                 actor4.SetScale(7,7,float(weather[5].get('3h'))*100)
@@ -152,17 +144,15 @@ class Weather3D:
         if checkboxes[3].get('pressure'):
             cube = vtk.vtkCubeSource()
             cubeMapper = vtk.vtkPolyDataMapper()
-            cubeMapper.SetInputConnection(cube.GetOutputPort())
-            #print(str(weather[3].get('press')))            
+            cubeMapper.SetInputConnection(cube.GetOutputPort())      
             actor2.SetMapper(cubeMapper)
             actor2.SetScale(7,7,(float(weather[3].get('press'))-950)*40/100)
             actor2.GetProperty().SetColor((float(weather[3].get('press'))-950)/100,0,0)
         if checkboxes[4].get('wind'):
             arrow = vtk.vtkArrowSource()
-            #arrow.SetShaftRadius(float(weather[6].get('deg'))/360)
             arrowMapper = vtk.vtkPolyDataMapper()
             arrowMapper.SetInputConnection(arrow.GetOutputPort())
-            print(str(weather[6].get('speed')))            
+         
             actor3.SetMapper(arrowMapper)
             actor3.SetScale(float(weather[6].get('speed'))*15)
             actor3.GetProperty().SetColor(0,1,0)
