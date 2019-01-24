@@ -110,7 +110,7 @@ class Weather3D:
                     l+=1
                     renderer.AddActor(actor_from_list)    
         renderer.ResetCamera()
-
+        renderer.SetBackground(1,1,1)
         interactor.Initialize()
         interactor.Start()
         #print(checkboxes)
